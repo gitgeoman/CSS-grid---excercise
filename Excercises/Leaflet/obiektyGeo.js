@@ -1,12 +1,12 @@
 function randomNumber(min, max){
 	
-    let random = ((Math.random()*(max-min+1))+min).toFixed(4);
+    let random = ((Math.random()*(max-min))+min).toFixed(4);
 return random
 };
 
-function objectGenerator(a,b,c,d,e){
-	
-	let basicClassObject = {
+function pointObjectGenerator(a,b,c,d,e){
+
+	let basicPonintObject = {
 	  "type": "Feature",
 	  "geometry": {
 	    "type": "Point",
@@ -18,7 +18,7 @@ function objectGenerator(a,b,c,d,e){
 	  }
 	};
 	//basicClassObject.geometry.coordinates=[randomNumber(20.13666, 21.875), randomNumber(51.87,52.3160)];
-	let newFeatureClassObcject= JSON.parse(JSON.stringify(basicClassObject));
+	let newFeatureClassObcject= JSON.parse(JSON.stringify(basicPonintObject));
 return newFeatureClassObcject;
 };
 
@@ -27,9 +27,51 @@ function randomGeometryObjectArrayGenerator(a,b,c,d){
 
 	let t0=performance.now();
 	
-	for (let i=0;i<100;i++){
-		randomFeatureClassArray.push(objectGenerator(a,b,c,d,i));
+	for (let i=0;i<5;i++){
+		randomFeatureClassArray.push(pointObjectGenerator(a,b,c,d,i));
 	};
 	let t1=performance.now();
-	console.log(`the array was generated in  ${t1-t0} miliseconds`)
+	console.log(`the array of points was generated in  ${((t1-t0)/1000).toFixed(6)} seconds`)
+};
+
+//single polygon generator
+function polygonObjectGenerator(a,b,c,d,e){
+	let pkt1=[randomNumber(a, b), randomNumber(c,d)]
+	let arrayPolygonCoordinates = [];
+	arrayPolygonCoordinates.push(pkt1);
+	//petla losuje ilosc petli i tyle razy ile zostanie zainicjowana tworzy punkt i wysyla go do tabeli
+	for(let k=3;k<(randomNumber(3,10));k++){
+		let pkt =[randomNumber(a, b), randomNumber(c,d)]
+		arrayPolygonCoordinates.push(pkt);
+	};
+	arrayPolygonCoordinates.push(pkt1);
+	//console.log(arrayPolygonCoordinates);
+
+	let basicPolygonObject =   { 
+		"type": "Feature",
+         "geometry": {
+           "type": "Polygon",
+           "coordinates": [
+             arrayPolygonCoordinates
+             ]
+         },
+         "properties": {
+           "name": "nameValue",
+           "id": e
+           }
+     };
+ 	let newFeatureClassObcject= JSON.parse(JSON.stringify(basicPolygonObject));
+	return newFeatureClassObcject;
+ };
+
+let randomFeatureClassArrayPolygon= [];
+function randomPolygonGeometryObjectArrayGenerator(a,b,c,d){
+
+	let t0=performance.now();
+	
+	for (let i=0;i<5;i++){
+		randomFeatureClassArrayPolygon.push(polygonObjectGenerator(a,b,c,d,i));
+	};
+	let t1=performance.now();
+	console.log(`the array of polygons was generated in  ${((t1-t0)/1000).toFixed(6)} seconds`)
 };

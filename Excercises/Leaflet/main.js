@@ -1,9 +1,14 @@
 $(document).ready(function () {
     //wczytywanie mapy
+    
+
+    
+    //tutaj taki kawalek ktory ma pytac o powiekszenie i jezeli nie podane to ustawic je na 12
+   
     let mymap = L.map('mymapid', 
         {
             center: [52.5, 21.0], 
-            zoom: 10, 
+            zoom: 7, 
             zoomControl: true, 
             attributionControl: false
         });
@@ -52,19 +57,46 @@ $(document).ready(function () {
     //polecenie dodania funkcji wyboru map do strony
     L.control.layers(baseMaps).addTo(mymap);
     
+    //polecenie dodania funkcji wyboru map do strony
     L.control.mousePosition().addTo(mymap);
 
-    console.log(mymap.getBounds());
+    //console.log(Object.values(mymap.getBounds()).map((item)=>{return [item.lng, item.lat]}));
 
-    let [a1,b1,c1,d1] = Object
-                            .values(
-                                mymap.getBounds()
-                                )
-                            .map((item)=>{return [item.lng, item.lat]})
-                            .flat();
- 
+    let [a1,b1,c1,d1] = Object.values(mymap.getBounds()).map((item)=>{return [item.lng, item.lat]}).flat();
+
+
+
+
+    //polygon
+
+    var myStyle = {
+    "color": "#ff7800",
+    "weight": 5,
+    "opacity": 0.65
+    };
+
+
+    randomPolygonGeometryObjectArrayGenerator(a1,c1,b1,d1);
+    let mapArrayofPolygons= randomFeatureClassArrayPolygon.map((item)=>{
+            return item.geometry.coordinates
+        });
+    //console.log(mapArrayofPolygons);
+    let tspolygon = performance.now();
+    L.geoJSON(randomFeatureClassArrayPolygon,
+        {
+            style:myStyle,
+            onEachFeature: onEachFeature
+    }).addTo(mymap);
+    let tkpolygon=performance.now();
+    console.log(`the array of polygon was load in ${((tkpolygon-tspolygon)/1000).toFixed(6)} seconds`);
+    
+
+
+    //points 
     randomGeometryObjectArrayGenerator(a1,c1,b1,d1);
-    let mapArray= randomFeatureClassArray.map((item)=>{return item.geometry.coordinates});
+    let mapArray= randomFeatureClassArray.map((item)=>{
+        return item.geometry.coordinates
+    });
     //console.log(mapArray)
 
 function onEachFeature(feature, layer) {
@@ -79,10 +111,23 @@ function onEachFeature(feature, layer) {
     }
 };
 
+let geojsonMarkerOptions = {
+    radius: 3,
+    fillColor: "#7599a1",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+};
+
 let geojsonFeature = randomFeatureClassArray;
-L.geoJSON(randomFeatureClassArray, {onEachFeature: onEachFeature}).addTo(mymap);
+let ts=performance.now();
+L.geoJSON(randomFeatureClassArray, {
+    pointToLayer: function (feature, latlng) {
 
-
-
-
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },onEachFeature: onEachFeature
+}).addTo(mymap);
+let tk=performance.now();
+console.log(`the array of points was load in ${((tk-ts)/1000).toFixed(6)} seconds`);
 });
