@@ -3,6 +3,20 @@ function randomNumber(min, max){
 	    let random = ((Math.random()*(max-min))+min).toFixed(4);
 return random
 };
+//api do łapania danych 
+const url='https://uinames.com/api/?amount=25';
+fetch(url)
+	.then((resp) => {
+		console.log(resp[1].name);
+	})
+	.then(json=>console.log(json))
+	.catch(function(error){
+
+	});
+//koniec obsługi api do łapania danych
+
+
+
 
 function pointObjectGenerator(a,b,c,d,e){
 

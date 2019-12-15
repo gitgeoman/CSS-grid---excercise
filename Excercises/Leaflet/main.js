@@ -1,8 +1,6 @@
 $(document).ready(function () {
     //wczytywanie mapy
-    
-
-    
+       
     //tutaj taki kawalek ktory ma pytac o powiekszenie i jezeli nie podane to ustawic je na 12
    
     let mymap = L.map('mymapid', 
@@ -57,11 +55,9 @@ $(document).ready(function () {
     //polecenie dodania funkcji wyboru map do strony
     L.control.layers(baseMaps).addTo(mymap);
     
-    //polecenie dodania funkcji wyboru map do strony
+    //polecenie dodania funkcji wskazywania współrzednych geogeraficznych kursora
     L.control.mousePosition().addTo(mymap);
-
-    //console.log(Object.values(mymap.getBounds()).map((item)=>{return [item.lng, item.lat]}));
-  
+    
     //funcja do sprawdzania obszaru gdzie jest okno mapy
     let [a1,b1,c1,d1] = Object
                             .values(
@@ -75,19 +71,19 @@ $(document).ready(function () {
                             .flat();
 
 
-//obliczanie wymiarow terenowych okna mapy w km
+    //obliczanie wymiarow terenowych okna mapy w km
 
     let l1=mymap.getBounds()._southWest;
     let l2=mymap.getBounds()._northEast;
     console.log(l1.distanceTo(l2)/1000+" km");
-    
+    //tutaj dokończyć kawałek który pozwoli obliczyć optymalne natężenie informatycje i na tej podstawie wskaże obiekty
 
     //polygon
-
+    //stylizacja dla poligonu
     var myStyle = {
-    "color": "#ff7800",
-    "weight": 5,
-    "opacity": 0.65
+        "color": "#ff7800",
+        "weight": 5,
+        "opacity": 0.65
     };
 
 
@@ -126,6 +122,7 @@ function onEachFeature(feature, layer) {
     }
 };
 
+
 let geojsonMarkerOptions = {
     radius: 3,
     fillColor: "#7599a1",
@@ -142,12 +139,31 @@ let geojsonFeature = randomFeatureClassArray;
 let ts=performance.now();
 let aaa = L.geoJSON(randomFeatureClassArray, {
     pointToLayer: function (feature, latlng) {
-
         return L.circleMarker(latlng, geojsonMarkerOptions);
-    },onEachFeature: onEachFeature
+    },
+    onEachFeature: onEachFeature
 }).addTo(mymap);
 let tk=performance.now();
 console.log(`the array of points was load in ${((tk-ts)/1000).toFixed(6)} seconds`);
+
+
+function loadData(array){
+array.forEach((item)=>{
+    $("#userData").append(`<div class="user">
+        <h3>${item.properties.name} ${item.properties.id}</h3>
+            <p>Object location:
+                ${item.geometry.coordinates[0]} E° , 
+                ${item.geometry.coordinates[1]} N° <br/>
+              Object name : 
+                ${item.properties.name} <br/>
+              Object identyficator: 
+                ${item.properties.id}
+            </p>
+    </div>`);
+});
+};
+loadData(randomFeatureClassArray);
+
 
 $("#filter").click((event)=>
     {

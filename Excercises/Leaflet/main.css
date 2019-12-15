@@ -148,4 +148,9 @@ h2
   color: #333;
   font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
-
+#userData{
+	margin:5%;
+	padding: 2%;
+	background-color: grey;
+	height: auto;
+}
