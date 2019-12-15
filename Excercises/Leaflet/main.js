@@ -61,11 +61,26 @@ $(document).ready(function () {
     L.control.mousePosition().addTo(mymap);
 
     //console.log(Object.values(mymap.getBounds()).map((item)=>{return [item.lng, item.lat]}));
+  
+    //funcja do sprawdzania obszaru gdzie jest okno mapy
+    let [a1,b1,c1,d1] = Object
+                            .values(
+                                mymap.getBounds()
+                                )
+                            .map((item)=>{
+                                //console.log(item);
+                                //console.log(mymap.getBounds());
+                                return [item.lng, item.lat]
+                            })
+                            .flat();
 
-    let [a1,b1,c1,d1] = Object.values(mymap.getBounds()).map((item)=>{return [item.lng, item.lat]}).flat();
 
+//obliczanie wymiarow terenowych okna mapy w km
 
-
+    let l1=mymap.getBounds()._southWest;
+    let l2=mymap.getBounds()._northEast;
+    console.log(l1.distanceTo(l2)/1000+" km");
+    
 
     //polygon
 
@@ -86,7 +101,7 @@ $(document).ready(function () {
         {
             style:myStyle,
             onEachFeature: onEachFeature
-    }).addTo(mymap);
+    })//.addTo(mymap);
     let tkpolygon=performance.now();
     console.log(`the array of polygon was load in ${((tkpolygon-tspolygon)/1000).toFixed(6)} seconds`);
     
@@ -120,9 +135,12 @@ let geojsonMarkerOptions = {
     fillOpacity: 0.8
 };
 
+
+
+//tutaj generuje i dodaje obiekty punktowe
 let geojsonFeature = randomFeatureClassArray;
 let ts=performance.now();
-L.geoJSON(randomFeatureClassArray, {
+let aaa = L.geoJSON(randomFeatureClassArray, {
     pointToLayer: function (feature, latlng) {
 
         return L.circleMarker(latlng, geojsonMarkerOptions);
@@ -130,4 +148,43 @@ L.geoJSON(randomFeatureClassArray, {
 }).addTo(mymap);
 let tk=performance.now();
 console.log(`the array of points was load in ${((tk-ts)/1000).toFixed(6)} seconds`);
+
+$("#filter").click((event)=>
+    {
+        //console.log(event.target.value)
+        //wartosc z warunekWartosc 
+        let warunek=$("#WW").val();
+        //console.log(text11);
+        filterArrays(randomFeatureClassArray,warunek);
+        //console.log(filterArrays(randomFeatureClassArray,1));
+        aaa.setStyle({
+            fillOpacity:0.55,
+            color:"",
+            //fillColor:"#42eff5"
+        });
+        //wyświetlaj przefiltrowane dane
+        L.geoJSON(filteredArray, {
+            style: function(){
+                //zmiana wartości diva po przerpwaodzaeniu zapytania (zwraca długość przewiltrowanej tabeli i kryterium)
+                $("#anwser").text(`Obiektow ktorych wartość id <${warunek} jest ${filteredArray.length}`);
+                //przywrocenie wartości poczatkowej pola na potrzeby dalszego filtrowania
+                $("#WW").val("");
+                return {
+                    color:"#9999",
+                    fillColor:"#f54e42",
+                    weight:2
+                }
+            },
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, geojsonMarkerOptions);
+            },
+            onEachFeature: onEachFeature,
+
+        }).addTo(mymap);
+
+    }
+);
+
+
+
 });

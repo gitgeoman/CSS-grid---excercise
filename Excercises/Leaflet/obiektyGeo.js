@@ -1,6 +1,6 @@
+//funkcja która losuje liczbę z przedziału (liczba rzeczywista)
 function randomNumber(min, max){
-	
-    let random = ((Math.random()*(max-min))+min).toFixed(4);
+	    let random = ((Math.random()*(max-min))+min).toFixed(4);
 return random
 };
 
@@ -14,7 +14,7 @@ function pointObjectGenerator(a,b,c,d,e){
 	  },
 	  "properties": {
 	    "name": "Dinagat Islands",
-	    "id": e
+	    "id": e+1
 	  }
 	};
 	//basicClassObject.geometry.coordinates=[randomNumber(20.13666, 21.875), randomNumber(51.87,52.3160)];
@@ -24,16 +24,13 @@ return newFeatureClassObcject;
 
 let randomFeatureClassArray= [];
 function randomGeometryObjectArrayGenerator(a,b,c,d){
-
 	let t0=performance.now();
-	
-	for (let i=0;i<5;i++){
+	for (let i=0;i<50;i++){
 		randomFeatureClassArray.push(pointObjectGenerator(a,b,c,d,i));
 	};
 	let t1=performance.now();
 	console.log(`the array of points was generated in  ${((t1-t0)/1000).toFixed(6)} seconds`)
 };
-
 //single polygon generator
 function polygonObjectGenerator(a,b,c,d,e){
 	let pkt1=[randomNumber(a, b), randomNumber(c,d)]
@@ -57,7 +54,7 @@ function polygonObjectGenerator(a,b,c,d,e){
          },
          "properties": {
            "name": "nameValue",
-           "id": e
+           "id": e+1
            }
      };
  	let newFeatureClassObcject= JSON.parse(JSON.stringify(basicPolygonObject));
@@ -69,9 +66,18 @@ function randomPolygonGeometryObjectArrayGenerator(a,b,c,d){
 
 	let t0=performance.now();
 	
-	for (let i=0;i<5;i++){
+	for (let i=0;i<50;i++){
 		randomFeatureClassArrayPolygon.push(polygonObjectGenerator(a,b,c,d,i));
 	};
 	let t1=performance.now();
 	console.log(`the array of polygons was generated in  ${((t1-t0)/1000).toFixed(6)} seconds`)
+};
+
+//filtrowanie danych 
+let filteredArray =[];
+function filterArrays(arrayTofilter,parameter){
+	filteredArray = arrayTofilter.filter((item)=>{
+		//console.log(item.properties.id>1);
+		return item.properties.id<parameter;
+	})
 };
