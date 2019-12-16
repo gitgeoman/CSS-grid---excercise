@@ -109,9 +109,6 @@ figure
     width: auto;
 }
 
-
-
-
 h2
 {
     color:#39a5f1;
@@ -148,9 +145,22 @@ h2
   color: #333;
   font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
-#userData{
+.user{
 	margin:5%;
 	padding: 2%;
-	background-color: grey;
+	background-color: black;
+	color:grey;
 	height: auto;
+}
+.user:hover{
+	background-color: lightgrey;
+	height: auto;
+}
+
+@keyframes fade { 
+  from { opacity: 0.5; } 
+}
+
+.blinking {
+  animation: fade 0.3s infinite alternate;
 }

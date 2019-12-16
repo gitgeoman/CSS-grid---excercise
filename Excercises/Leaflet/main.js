@@ -22,6 +22,7 @@ $(document).ready(function () {
             transparent : 'true', 
             version : '1.1.1'
         });
+
     //warstwa z mapą z geoportalu
     var lyrORTO = L.tileLayer.wms("http://mapy.geoportal.gov.pl/wss/service/img/guest/ORTO/MapServer/WMSServer", 
         {
@@ -117,7 +118,9 @@ function onEachFeature(feature, layer) {
                 `spec = ${feature.properties.name},<br/>
                 id = ${feature.properties.id}, <br/>
                 dlugosc = ${feature.geometry.coordinates[0]}, <br/>
-                szerokosc = ${feature.geometry.coordinates[1]}` 
+                szerokosc = ${feature.geometry.coordinates[1]}
+                ${this}
+                ` 
              );
     }
 };
@@ -132,38 +135,37 @@ let geojsonMarkerOptions = {
     fillOpacity: 0.8
 };
 
-
-
 //tutaj generuje i dodaje obiekty punktowe
 let geojsonFeature = randomFeatureClassArray;
-let ts=performance.now();
-let aaa = L.geoJSON(randomFeatureClassArray, {
-    pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, geojsonMarkerOptions);
-    },
-    onEachFeature: onEachFeature
-}).addTo(mymap);
-let tk=performance.now();
-console.log(`the array of points was load in ${((tk-ts)/1000).toFixed(6)} seconds`);
-
-
-function loadData(array){
-array.forEach((item)=>{
-    $("#userData").append(`<div class="user">
-        <h3>${item.properties.name} ${item.properties.id}</h3>
-            <p>Object location:
-                ${item.geometry.coordinates[0]} E° , 
-                ${item.geometry.coordinates[1]} N° <br/>
-              Object name : 
-                ${item.properties.name} <br/>
-              Object identyficator: 
-                ${item.properties.id}
-            </p>
-    </div>`);
-});
-};
-loadData(randomFeatureClassArray);
-
+ //performance measurement
+    let ts=performance.now();//start pomiaru czasu
+    let aaa = L.geoJSON(randomFeatureClassArray, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, geojsonMarkerOptions);
+        },
+        onEachFeature: onEachFeature
+    }).addTo(mymap);
+    let tk=performance.now(); // koniec pomiaru czasu
+    console.log(`the array of points was load in ${((tk-ts)/1000).toFixed(6)} seconds`);
+    
+    //funkcja która dodaje opis pod mapą
+    function loadData(array){
+    array.forEach((item, i)=>{
+        $("#userData").append(`
+            <div class="user" id="${i}">
+                <h3>${item.properties.name} ${item.properties.id}</h3>
+                    <p>Object location:
+                        ${item.geometry.coordinates[0]} E° , 
+                        ${item.geometry.coordinates[1]} N° <br/>
+                      Object name : 
+                        ${item.properties.name} <br/>
+                      Object identyficator: 
+                        <div id="nrObiektu">${item.properties.id}</div>
+                    </p>
+            </div>`);
+    });
+    };
+    loadData(randomFeatureClassArray);
 
 $("#filter").click((event)=>
     {
@@ -178,7 +180,8 @@ $("#filter").click((event)=>
             color:"",
             //fillColor:"#42eff5"
         });
-        //wyświetlaj przefiltrowane dane
+
+        //wyświetlaj przefiltrowane dane przestrzenne
         L.geoJSON(filteredArray, {
             style: function(){
                 //zmiana wartości diva po przerpwaodzaeniu zapytania (zwraca długość przewiltrowanej tabeli i kryterium)
@@ -186,9 +189,10 @@ $("#filter").click((event)=>
                 //przywrocenie wartości poczatkowej pola na potrzeby dalszego filtrowania
                 $("#WW").val("");
                 return {
-                    color:"#9999",
-                    fillColor:"#f54e42",
-                    weight:2
+                    color:"#32a852",
+                    fillColor:"#eb0505",
+                    weight:1,
+                    className: 'blinking'
                 }
             },
             pointToLayer: function (feature, latlng) {
@@ -201,6 +205,34 @@ $("#filter").click((event)=>
     }
 );
 
+let blinker = {
+                    color:"#32a852",
+                    fillColor:"#eb0505",
+                    weight:1,
+                    className: 'blinking'
+                };
+
+let marker;
+    $(".user")
+    .mouseenter(function(){ 
+        let numberSelected = Number(this.id)
+            console.log(numberSelected);
+        console.log();
+                let a1= Number(randomFeatureClassArray[numberSelected].geometry.coordinates[0]);
+                let a2= Number(randomFeatureClassArray[numberSelected].geometry.coordinates[1]);
+                    let latlng = L.latLng(a2, a1);
+                    //funkcja pokazuje mrugający marker
+                    mymap.panTo(latlng);
+                    marker=L.circleMarker(latlng, blinker).addTo(mymap);
+                console.log(latlng)
+    })
+    .mouseout(function(){
+        console.log("aaa");
+        setTimeout(() => {
+            mymap.removeLayer(marker);
+        }, 2000);
+         
+    })
 
 
 });
