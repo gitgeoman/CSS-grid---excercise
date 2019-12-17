@@ -153,7 +153,7 @@ let geojsonFeature = randomFeatureClassArray;
     array.forEach((item, i)=>{
         $("#userData").append(`
             <div class="user" id="${i}">
-                <h3>${item.properties.name} ${item.properties.id}</h3>
+                <h4>${item.properties.name} ${item.properties.id}</h4>
                     <p>Object location:
                         ${item.geometry.coordinates[0]} E° , 
                         ${item.geometry.coordinates[1]} N° <br/>
@@ -185,8 +185,18 @@ $("#filter").click((event)=>
         L.geoJSON(filteredArray, {
             style: function(){
                 //zmiana wartości diva po przerpwaodzaeniu zapytania (zwraca długość przewiltrowanej tabeli i kryterium)
-                $("#anwser").text(`Obiektow ktorych wartość id <${warunek} jest ${filteredArray.length}`);
+                $("#anwser").text(`Obiektow ktorych wartość id <${warunek} jest ${filteredArray.length}    `);
+                    $("#anwser").append(`<input type="Button" value="Jeszcze raz" id="reset">`);
                 //przywrocenie wartości poczatkowej pola na potrzeby dalszego filtrowania
+                
+                $("#reset").click((event)=>
+                    {
+                        $("#anwser").text(``);
+                        $("#anwser").append(`
+                            <input type="text" placeholder="wprowadź wartość..." id="WW">
+                        <input type="Button" value="filtruj" id="filter">`);
+                    });
+
                 $("#WW").val("");
                 return {
                     color:"#32a852",
@@ -201,9 +211,12 @@ $("#filter").click((event)=>
             onEachFeature: onEachFeature,
 
         }).addTo(mymap);
-
     }
 );
+
+
+
+
 
 let blinker = {
                     color:"#32a852",
@@ -225,7 +238,10 @@ let marker;
                     mymap.panTo(latlng);
                     marker=L.circleMarker(latlng, blinker).addTo(mymap);
                 console.log(latlng)
-    })
+                setTimeout(() => {
+                 mymap.removeLayer(marker);
+                }, 2000);
+    })/*
     .mouseout(function(){
         console.log("aaa");
         setTimeout(() => {
@@ -233,6 +249,6 @@ let marker;
         }, 2000);
          
     })
-
+    */
 
 });

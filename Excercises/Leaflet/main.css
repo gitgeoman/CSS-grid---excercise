@@ -61,7 +61,15 @@ nav
 {
 	color:#0a2b42;
 }
-
+h4{
+	margin:2px;
+	text-align:center;
+}
+p{
+	margin:0;
+	
+	font-size: 0.8em;
+}
 .categories
 {
 	margin-left:auto;
@@ -105,8 +113,8 @@ figure
 }
 
 #mymapid {
-    height: 50vh;
-    width: auto;
+	border-radius: 5px;
+    width: 50vw;
 }
 
 h2
@@ -126,16 +134,20 @@ h2
     background-color: #2F3336;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 10px;
+
     height: 100px;
     width:80%;
-    padding:10px;
+
 }
 
 #footer{
     height: 10vh;
 }
-
+.container{
+	display: flex;
+	align-items: stretch;
+	justify-content: space-around;
+}
 
 .leaflet-container .leaflet-control-mouseposition {
   background-color: rgba(255, 255, 255, 0.7);
@@ -145,16 +157,23 @@ h2
   color: #333;
   font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
+#usersDataSet{
+
+	overflow: auto;
+    overflow-y: scroll;
+	height:60vh;
+}
+
 .user{
-	margin:5%;
-	padding: 2%;
+	border-radius: 7px;
+	padding-left:10px;
+	width: 45vw;
 	background-color: black;
 	color:grey;
-	height: auto;
 }
+
 .user:hover{
 	background-color: lightgrey;
-	height: auto;
 }
 
 @keyframes fade { 
@@ -163,4 +182,9 @@ h2
 
 .blinking {
   animation: fade 0.3s infinite alternate;
+}
+#inputy{
+	display: flex;
+	justify-content: center;
+	margin:1em;
 }
